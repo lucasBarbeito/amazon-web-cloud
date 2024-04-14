@@ -22,45 +22,6 @@ class Api::V1::AmazonProductsController < ActionController::Base
       render json: { error: 'AmazonProduct not found' }, status: :not_found
     end
   end
-
-  def background_create
-    begin
-      amazon_url = params.dig("amazon_url")
-      validate_url(amazon_url)
-      @amazon_product = AmazonProduct.find_by(url: amazon_url)
-      if @amazon_product
-        respond_to do |format|
-          format.html { redirect_to api_v1_amazon_product_path(@amazon_product.id) }
-          format.json { render json: @amazon_product, status: :ok }
-        end
-      else
-        @amazon_product = AmazonProduct.new(url: amazon_url)
-        if @amazon_product.save
-          GetAmazonProductDescriptionJob.perform_later(@amazon_product.id)
-          respond_to do |format|
-            format.html { redirect_to api_v1_amazon_product_path(@amazon_product.id), notice: "Amazon Product is being processed"  }
-            format.json { render json: @amazon_product, status: :created }
-          end
-        else
-          respond_to do |format|
-            format.html { redirect_to root_path, notice: "Amazon Product wasn't saved" }
-            format.json { render json: { error: "Amazon Product wasn't saved" }, status: :unprocessable_entity }
-          end
-        end
-      end
-    end
-  rescue ArgumentError => e
-    respond_to do |format|
-      format.html { redirect_to root_path, notice: e.message }
-      format.json { render json: { error: e.message }, status: :unprocessable_entity }
-    end
-  rescue SocketError => e
-    respond_to do |format|
-      format.html { redirect_to root_path, notice: e.message, status: :unprocessable_entity }
-      format.json { render json: { error: e.message }, status: :unprocessable_entity }
-    end
-  end
-
   def create
     begin
       amazon_url = params.dig("amazon_url")
@@ -96,6 +57,45 @@ class Api::V1::AmazonProductsController < ActionController::Base
         format.html { redirect_to root_path, notice: e.message, status: :unprocessable_entity }
         format.json { render json: { error: e.message }, status: :unprocessable_entity }
       end
+    end
+  end
+
+  # Cree este metodo para que se pueda crear un producto en background. La idea fue para probar otra forma de crear un producto
+  def background_create
+    begin
+      amazon_url = params.dig("amazon_url")
+      validate_url(amazon_url)
+      @amazon_product = AmazonProduct.find_by(url: amazon_url)
+      if @amazon_product
+        respond_to do |format|
+          format.html { redirect_to api_v1_amazon_product_path(@amazon_product.id) }
+          format.json { render json: @amazon_product, status: :ok }
+        end
+      else
+        @amazon_product = AmazonProduct.new(url: amazon_url)
+        if @amazon_product.save
+          GetAmazonProductDescriptionJob.perform_later(@amazon_product.id)
+          respond_to do |format|
+            format.html { redirect_to api_v1_amazon_product_path(@amazon_product.id), notice: "Amazon Product is being processed"  }
+            format.json { render json: @amazon_product, status: :created }
+          end
+        else
+          respond_to do |format|
+            format.html { redirect_to root_path, notice: "Amazon Product wasn't saved" }
+            format.json { render json: { error: "Amazon Product wasn't saved" }, status: :unprocessable_entity }
+          end
+        end
+      end
+    end
+  rescue ArgumentError => e
+    respond_to do |format|
+      format.html { redirect_to root_path, notice: e.message }
+      format.json { render json: { error: e.message }, status: :unprocessable_entity }
+    end
+  rescue SocketError => e
+    respond_to do |format|
+      format.html { redirect_to root_path, notice: e.message, status: :unprocessable_entity }
+      format.json { render json: { error: e.message }, status: :unprocessable_entity }
     end
   end
 

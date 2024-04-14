@@ -19,9 +19,10 @@ for url in "${urls[@]}"; do
          -H "Content-Type: application/json" \
          -H "Accept: application/json" \
          -d "{\"amazon_url\": \"$url\"}" \
-         http://localhost:3000/productUrl
+         http://localhost:3000/backgroundProductUrl
 
     # Add sleep to avoid overwhelming the server with requests
     # sleep 1
 done
+
 
