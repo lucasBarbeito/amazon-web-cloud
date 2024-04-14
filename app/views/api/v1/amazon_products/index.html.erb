@@ -1,0 +1,13 @@
+<h1>Amazon Products</h1>
+
+<ul class="inline-products">
+  <% @amazon_products.each do |amazon_product| %>
+    <li style="display: inline-block;">
+      <strong><%= amazon_product.id %></strong>)
+      <a href="<%= amazon_product.url %>" target="_blank" style="color: #000000;"><%= amazon_product.url %></a> -
+      <%= link_to "View Word Cloud", api_v1_amazon_product_path(amazon_product)%>
+    </li>
+  <% end %>
+</ul>
+<%= link_to "Go to Home", root_path%>
+

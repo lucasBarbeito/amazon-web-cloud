@@ -1,0 +1,17 @@
+<%= stylesheet_link_tag('amazonProduct') %>
+<h1>Amazon Product <%= @amazon_product.id %> </h1>
+<h3> Url: <a href="<%= @amazon_product.url %>" target="_blank"><%= @amazon_product.url %></a></h3>
+
+<ul class="cloud" data-show-value>
+  <% @amazon_product.word_frequency.each do |word, frequency| %>
+    <% color = %w[#a33 #181 #33a #c38].sample %>
+    <%# if frequency > 4 %>
+<!--    Hago la validacion aca? Como quedaria mejor mostrar estos segun la cantidad de palabras?-->
+<!--      <li><p data-weight="<%#= frequency %>" style="color: <%#= color %>;"><%#= word %></p></li>-->
+    <%# end %>
+    <li><p data-weight="<%= frequency %>" style="color: <%= color %>;"><%= word %></p></li>
+  <% end %>
+</ul>
+
+<%= link_to "All Products", api_v1_amazon_products_path%>
+<%= link_to "Go to Home", root_path%>

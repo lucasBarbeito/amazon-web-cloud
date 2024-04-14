@@ -1,0 +1,15 @@
+<% if notice %>
+  <aside id="snackbar" style="background-color: red; color: white; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); z-index: 9999; padding: 15px; border-radius: 5px;">
+    <%= notice %>
+  </aside>
+<% end %>
+
+<h1>Create New Amazon Product</h1>
+<%= form_tag api_v1_amazon_products_path, method: :post do %>
+  <label for="amazon_url">Amazon URL:</label><br>
+  <%= text_field_tag "amazon_url" %><br>
+  <%= submit_tag "Create Amazon Product" %>
+  <%= link_to "View All products", api_v1_amazon_products_path %>
+<% end %>
+
+
