@@ -27,5 +27,7 @@ class GetProductDescriptionService
     rescue OpenURI::HTTPError => e
       raise SocketError, "Amazon Product not found"
     end
+  rescue NoMethodError => e
+    raise ArgumentError, "Amazon Product description might not be text"
   end
 end

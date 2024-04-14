@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   root 'main#home'
   get 'main/home'
   post "/productUrl" => "api/v1/amazon_products#create"
+  post "/backgroundProductUrl" => "api/v1/amazon_products#background_create"
   namespace :api do
     namespace :v1 do
       resources :amazon_products, only: [:index, :show, :create]
